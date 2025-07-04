@@ -35,35 +35,45 @@ Make sure both XBee modules are on the same PAN and use the same baud rate (1152
 Install Arduino IDE (1.8+).
 Connect camera and XBee as per code pin definitions.
 Select the board : "ESP32 wrover Module"
-Upload the Arduino sketch with camera_sender.h.
+Open the `test_camera` folder (contains the Arduino sketch and camera_sender.h).
+Upload the sketch to the ESP32.
+
+## Project Structure
+- `test_camera/` — Arduino code for ESP32 (including camera_sender.h)
+- `gui.py`and `photo.py` files — Python scripts for PC-side communication and image reception
+- `README.md` — This documentation
 
 ## Python Environment Setup
 Install pyserial for serial communication:
+```
 pip install pyserial
+```
 
-## How It Works
-ESP32 waits for command 'c' on UART2.
-On 'c', captures image and sends:
-Start sequence (4 bytes)
-Image size (4 bytes, big-endian)
+## How It Works (side of ESP32)
+- ESP32 waits for command 'c' on UART2.
+- On 'c', captures image and sends:
+- Start sequence (4 bytes)
+- Image size (4 bytes, big-endian)
 
-JPEG data
+- JPEG data
 
-End sequence (4 bytes)
+- End sequence (4 bytes)
 
-Python script sends 'c' command and listens for image frames.
-Image saved as image_recue_X.jpg with incrementing numbers.
+## How it works (PC side)
+- Python script sends 'c' command (when the button is push)
+- Python start saving the data when he receive the 'start'
+- continue to save for the lenght of the image (4 bits)
+- Verify it has the good end (4bits)
+- Convert Image and sav it as image_date.jpg 
+- Show it in the interface
 
 ## Usage
-Run Python script:
-python main.py
+Run the Python script from your PC:
+```
+python gui.py
+```
 
-In terminal, type:
-
-- 'c' + Enter — capture and receive image
-- 'q' + Enter — quit program
-
-Images saved in the script’s folder.
+Images are saved in the same folder as the script.
 
 ## Important
 - Match baud rates (115200) and serial port name.

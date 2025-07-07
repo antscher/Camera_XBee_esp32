@@ -67,7 +67,13 @@ void init_camera_and_uart() {
 
 void take_and_send_picture() {
   Serial.println("📸 Capturing image...");
+  // Refresh the buffer
   camera_fb_t *fb = esp_camera_fb_get();
+  if (fb) esp_camera_fb_return(fb);
+
+  // take a new image
+  fb = esp_camera_fb_get();
+
   if (!fb) {
     Serial.println("❌ Capture failed");
     XBeeSerial.println("❌ Capture failed");
@@ -101,4 +107,5 @@ void take_and_send_picture() {
 
   Serial.println("✅ Image sent via XBee\n");
 }
+
 
